@@ -1,11 +1,12 @@
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
 const Anthropic = require("@anthropic-ai/sdk");
 
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use(express.static("public"));
+app.use(express.static(path.join(__dirname, "public")));
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -70,6 +71,10 @@ Rules:
     console.error(e);
     res.status(500).json({ error: "Something went wrong. Try again." });
   }
+});
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
 const PORT = process.env.PORT || 3000;
